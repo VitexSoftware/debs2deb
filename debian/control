@@ -8,7 +8,7 @@ Uploaders: Vitex <info@vitexsoftware.cz>
 Homepage: https://github.com/Vitexus/debs2deb/
 
 Package: debs2deb
-Architecture: any
+Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: offline debian repository in debian package maker
