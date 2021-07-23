@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+
+Name=debs2deb
+Comment=Offliner repository installer
+Categories=Admin
+
+Icon=debs2deb
+Exec=debs2deb
+Terminal=true

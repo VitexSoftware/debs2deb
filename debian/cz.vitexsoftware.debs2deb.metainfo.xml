@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>cz.vitexsoftware.debs2deb</id>
+  
+  <name>Debs2deb</name>
+  <summary>Prepare offline debian repository as debian package</summary>
+  
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  
+  <description>
+    <p>
+      Find packages in given path and prepare installabe repository 
+    </p>
+  </description>
+  
+  <launchable type="desktop-id">io.github.vitexsoftware.debs2deb.desktop</launchable>
+</component>
+

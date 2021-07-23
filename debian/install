@@ -1,0 +1,4 @@
+debs2deb /usr/bin
+debian/cz.vitexsoftware.debs2deb.metainfo.xml    usr/share/metainfo/
+debian/cz.vitexsoftware.debs2deb.desktop         usr/share/applications/
+debs2deb.svg                 usr/share/icons/hicolor/scalable/apps/

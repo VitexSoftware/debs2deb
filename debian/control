@@ -1,0 +1,16 @@
+Source: debs2deb
+Section: unknown
+Priority: optional
+Build-Depends: debhelper-compat (= 12), coreutils, dpkg-dev, gzip, findutils
+Standards-Version: 4.5.1
+Maintainer: Vítězslav Dvořák <info@vitexsoftware.cz>
+Uploaders: Vitex <info@vitexsoftware.cz>
+Homepage: https://github.com/Vitexus/debs2deb/
+
+Package: debs2deb
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: offline debian repository in debian package maker
+ Search for all debian packages in given path and prepare 
+ offline debian source from it

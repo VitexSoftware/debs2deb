@@ -1,0 +1,108 @@
+#!/bin/sh
+#Debs2Deb (G) 2021 VitexSoftware - put your stars here https://github.com/Vitexus/debs2deb/
+
+set +x
+
+VERBOSE=1
+
+if [ -z $1 ];
+then
+    echo  Offline repository builder
+    echo  usage:
+    echo $0 DEBSDIR [pkgname]
+    exit
+fi
+
+DEBSDIR=$1
+PKGNAME=$2
+
+if [ -z $2 ]; 
+then
+	PKGNAME=$(basename $DEBSDIR | tr '[:upper:]' '[:lower:]' ) 
+else 
+	PKGNAME=$(echo $2 | tr '[:upper:]' '[:lower:]')
+fi
+
+PKGSDIR=/var/lib/debs2deb/${PKGNAME}
+VERSION=`date +"%s"`
+DEBNAME=${PKGNAME}-${VERSION}
+INDEB_PKGSDIR=debian/${PKGNAME}${PKGSDIR}
+
+ALLPACKAGES=`find ${DEBSDIR}  -type f  -name '*.deb' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
+
+if [ $VERBOSE = 1 ]; 
+then 
+	echo generating ${PKGNAME}.deb from ${DEBSDIR}
+fi
+
+cat > debian/control << EOF
+Source: ${PKGNAME}
+Build-Depends: debhelper (>= 7.0.50~), coreutils, dpkg-dev, gzip, findutils
+Standards-Version: 4.5.1
+Maintainer: Vítězslav Dvořák <info@vitexsoftware.cz>
+Uploaders: Vitex <info@vitexsoftware.cz>
+Priority: optional
+Homepage: https://github.com/Vitexus/offline_deb_repo/
+
+Package: ${PKGNAME}
+Recommends: gdebi-core
+Architecture: all
+Section: system
+Priority: optional
+Description: Offline Custom deb repository
+ ${ALLPACKAGES}
+EOF
+
+cat > debian/postinst << EOF
+#! /bin/sh -e
+
+case "$1" in
+    configure)
+	apt-get update
+esac
+
+#DEBHELPER#
+
+EOF
+
+cat > debian/postrm << EOF
+#! /bin/sh -e
+	apt-get update
+
+#DEBHELPER#
+
+EOF
+
+
+
+cat > debian/rules << EOF
+#!/usr/bin/make -f
+
+%:
+	dh \$@
+
+override_dh_install:
+	dh_install
+	mkdir -p ${INDEB_PKGSDIR}
+	mkdir -p debian/${PKGNAME}/etc/apt/sources.list.d/
+EOF
+
+mkdir -p debian/source
+
+echo "3.0 (native)" > debian/source/format
+echo "11" > debian/compat
+
+for DEB in ${ALLPACKAGES}; do
+    echo "	cp ${DEB}  ${INDEB_PKGSDIR}" >> debian/rules
+done 
+
+echo "	echo \"Remove me using: apt-get remove ${PKGNAME}\" > debian/${PKGNAME}/etc/apt/sources.list.d/${PKGNAME}.list" >> debian/rules
+echo "	echo \"deb [trusted=yes] file://${PKGSDIR} ./\" > debian/${PKGNAME}/etc/apt/sources.list.d/${PKGNAME}.list" >> debian/rules
+echo "	dpkg-scanpackages --multiversion ${INDEB_PKGSDIR} /dev/null | gzip -9c > ${INDEB_PKGSDIR}/Packages.gz" >> debian/rules
+
+
+rm -f debian/changelog debian/changelog.dch
+dch --create -v ${VERSION} --package ${PKGNAME} "${DEBSDIR} packed "
+
+debuild --noconf --no-lintian -i -us -uc -b
+rm -rf debian

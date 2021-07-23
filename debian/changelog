@@ -1,0 +1,6 @@
+deb2debs (0.1-1) UNRELEASED; urgency=low
+
+  * Initial release. Closes: #nnnn
+    <nnnn is the bug number of your ITP>
+
+ -- Vitex <info@vitexsoftware.cz>  Fri, 23 Jul 2021 19:42:55 +0200
