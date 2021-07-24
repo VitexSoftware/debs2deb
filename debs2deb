@@ -83,6 +83,7 @@ EOF
 
 cat > ${BUILDDIR}/debian/postrm << EOF
 #! /bin/sh -e
+	rm -f /etc/apt/sources.list.d/${PKGNAME}.list
 	apt-get update
 
 #DEBHELPER#
