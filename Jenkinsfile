@@ -161,7 +161,7 @@ def buildPackage() {
 
 
 def postinstallCommand(){
-    return 'debs2deb ; debs2deb ~ selftest ; dpkg -i selftest_*_all.deb; '
+    return 'debs2deb ; debs2deb ~ selftest ; sudo dpkg -i selftest_*_all.deb; '
 }
 
 def installPackages() {
