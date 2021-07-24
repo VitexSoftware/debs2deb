@@ -161,7 +161,12 @@ def buildPackage() {
 
 
 def postinstallCommand(){
-    return 'debs2deb ; debs2deb ~ selftest ; sudo dpkg -i selftest_*_all.deb; '
+    def DIST = sh (
+	script: 'lsb_release -sc',
+        returnStdout: true
+    ).trim()
+
+    return 'debs2deb ; debs2deb ~ selftest ; sudo dpkg -i selftest_*~' + DIST + '~' + env.BUILD_NUMBER + ' _all.deb; '
 }
 
 def installPackages() {
