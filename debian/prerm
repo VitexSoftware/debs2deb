@@ -1,0 +1,10 @@
+#! /bin/sh
+
+set -e
+
+case "$1" in
+    remove|upgrade)
+	rm -rf /var/tmp/debs2deb/
+esac
+
+#DEBHELPER#

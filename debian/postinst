@@ -1,0 +1,9 @@
+#! /bin/sh -e
+
+case "$1" in
+    configure)
+    mkdir -p /var/tmp/debs2deb/
+    chmod uog+rwX /var/tmp/debs2deb/
+esac
+
+#DEBHELPER#
