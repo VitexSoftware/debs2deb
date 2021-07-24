@@ -166,7 +166,12 @@ def postinstallCommand(){
         returnStdout: true
     ).trim()
 
-    return 'debs2deb ; debs2deb ~ selftest ; sudo dpkg -i selftest_*~' + DIST + '~' + env.BUILD_NUMBER + ' _all.deb; '
+    return 'debs2deb ; 
+    debs2deb ~ selftest ; 
+    sudo rm /etc/apt/sources.list.d/* ; sudo apt update; 
+    sudo dpkg -i selftest_*~' + DIST + '~' + env.BUILD_NUMBER + ' _all.deb; 
+    apt-get source debs2deb;
+    '
 }
 
 def installPackages() {
