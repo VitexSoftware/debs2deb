@@ -13,7 +13,7 @@ debs2deb /debs/path/ packagename
 ```
 
 Script recursively find debian packages in path and build debian package from it.
-Package contains also its /etc/apt/sources.list.d/PACKNAME.list for easy installation of packages
+Package contains also its /etc/apt/sources.list.d/PACKNAME.list for easy installation of packages (apt install ...)
 
 ```shell
 vitex@exiv:~$ debs2deb /tmp/crio
