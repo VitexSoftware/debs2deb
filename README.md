@@ -77,7 +77,30 @@ dpkg-buildpackage: info: binary-only upload (no source included)
 
 Now you can transfer resutlting package into remote system to install using **dpkg** or **gdebi**:
 
+Then you can see the packages availble:
 
+```shell
+vitex@exiv:~/tmp$ aptitude search cri-o
+p   cri-o                                                                                         - OCI-based implementation of Kubernetes Container Runtime Interface.                                    
+p   cri-o-runc                                                                                    - Open Container Project - runtime                                                                       
+```
+
+And install what you need:
+
+
+```shell
+vitex@exiv:~/tmp$ sudo aptitude install cri-o-runc
+Následující NOVÉ balíky budou instalovány:    
+  cri-o-runc 
+0 balíků aktualizováno, 1 nově instalováno, 0 k odstranění a 7 neaktualizováno.
+Je třeba stáhnout 0 B/3 003 kB archivů. Po rozbalení bude použito 12,7 MB.
+Mám: 1 file:/var/lib/debs2deb crio/ cri-o-runc 1.0.0-1 [3 003 kB]
+100% [Pracuji]Vybírá se dosud nevybraný balík cri-o-runc.
+(Načítá se databáze … nyní je nainstalováno 591817 souborů a adresářů.)
+Připravuje se nahrazení …/cri-o-runc_1.0.0-1_amd64.deb …
+Rozbaluje se cri-o-runc (1.0.0-1) …
+Nastavuje se balík cri-o-runc (1.0.0-1) …
+```
 
 
 Installation
