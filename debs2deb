@@ -23,19 +23,32 @@ else
 	PKGNAME=$(echo $2 | tr '[:upper:]' '[:lower:]')
 fi
 
-PKGSDIR=/var/lib/debs2deb/${PKGNAME}
+STOREDIR=/var/lib/debs2deb/
+PKGSDIR=${STOREDIR}${PKGNAME}
 VERSION=`date +"%s"`
-DEBNAME=${PKGNAME}-${VERSION}
-INDEB_PKGSDIR=debian/${PKGNAME}${PKGSDIR}
+DEBNAME=${PKGNAME}_${VERSION}
+BUILDDIR=/var/tmp/debs2deb/${DEBNAME}
+INDEB_PKGSDIR=${BUILDDIR}/debian/${PKGNAME}${PKGSDIR}
+INITIAL_DIR=`pwd`
 
-ALLPACKAGES=`find ${DEBSDIR}  -type f  -name '*.deb' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`
+mkdir -p ${BUILDDIR}/debian
+
+ALLPACKAGES=`find ${DEBSDIR}  -type f  -name '*.deb' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'  | xargs -n1 | sort -u | xargs`
+
+PACKAGESDESC=""
+ONLYNAMES=""
+for PKG in ${ALLPACKAGES}; do
+	ONLYNAMES="${ONLYNAMES} `basename ${PKG}| cut -d_ -f1` "
+	PACKAGESDESC="${PACKAGESDESC} `basename ${PKG}`		`dpkg-deb -I ${PKG} | grep 'Description: ' | sed 's/Description://g'`
+"
+done
 
 if [ $VERBOSE = 1 ]; 
 then 
 	echo generating ${PKGNAME}.deb from ${DEBSDIR}
 fi
 
-cat > debian/control << EOF
+cat > ${BUILDDIR}/debian/control << EOF
 Source: ${PKGNAME}
 Build-Depends: debhelper (>= 7.0.50~), coreutils, dpkg-dev, gzip, findutils
 Standards-Version: 4.5.1
@@ -50,10 +63,11 @@ Architecture: all
 Section: system
 Priority: optional
 Description: Offline Custom deb repository
- ${ALLPACKAGES}
+ Packed packages from ${DEBSDIR}
+${PACKAGESDESC}
 EOF
 
-cat > debian/postinst << EOF
+cat > ${BUILDDIR}/debian/postinst << EOF
 #! /bin/sh -e
 
 case "$1" in
@@ -61,11 +75,13 @@ case "$1" in
 	apt-get update
 esac
 
+echo "Now you can install: ${ONLYNAMES}"
+
 #DEBHELPER#
 
 EOF
 
-cat > debian/postrm << EOF
+cat > ${BUILDDIR}/debian/postrm << EOF
 #! /bin/sh -e
 	apt-get update
 
@@ -73,9 +89,7 @@ cat > debian/postrm << EOF
 
 EOF
 
-
-
-cat > debian/rules << EOF
+cat > ${BUILDDIR}/debian/rules << EOF
 #!/usr/bin/make -f
 
 %:
@@ -84,25 +98,31 @@ cat > debian/rules << EOF
 override_dh_install:
 	dh_install
 	mkdir -p ${INDEB_PKGSDIR}
-	mkdir -p debian/${PKGNAME}/etc/apt/sources.list.d/
+	mkdir -p ${BUILDDIR}/debian/${PKGNAME}/etc/apt/sources.list.d/
 EOF
 
-mkdir -p debian/source
+mkdir -p ${BUILDDIR}/debian/source
 
-echo "3.0 (native)" > debian/source/format
-echo "11" > debian/compat
+echo "3.0 (native)" > ${BUILDDIR}/debian/source/format
+echo "11" > ${BUILDDIR}/debian/compat
 
 for DEB in ${ALLPACKAGES}; do
-    echo "	cp ${DEB}  ${INDEB_PKGSDIR}" >> debian/rules
+    echo "	cp ${DEB}  ${INDEB_PKGSDIR}" >> ${BUILDDIR}/debian/rules
 done 
 
-echo "	echo \"Remove me using: apt-get remove ${PKGNAME}\" > debian/${PKGNAME}/etc/apt/sources.list.d/${PKGNAME}.list" >> debian/rules
-echo "	echo \"deb [trusted=yes] file://${PKGSDIR} ./\" > debian/${PKGNAME}/etc/apt/sources.list.d/${PKGNAME}.list" >> debian/rules
-echo "	dpkg-scanpackages --multiversion ${INDEB_PKGSDIR} /dev/null | gzip -9c > ${INDEB_PKGSDIR}/Packages.gz" >> debian/rules
+echo "	echo \"Remove me using: apt-get remove ${PKGNAME}\" > ${BUILDDIR}/debian/${PKGNAME}/etc/apt/sources.list.d/${PKGNAME}.list" >> ${BUILDDIR}/debian/rules
+echo "	echo \"deb [trusted=yes] file://${STOREDIR} ${PKGNAME}/\" > ${BUILDDIR}/debian/${PKGNAME}/etc/apt/sources.list.d/${PKGNAME}.list" >> ${BUILDDIR}/debian/rules
+echo "	dpkg-scanpackages --multiversion ${INDEB_PKGSDIR} /dev/null | sed  's#${INDEB_PKGSDIR}#${PKGNAME}#g' > ${INDEB_PKGSDIR}/Packages" >> ${BUILDDIR}/debian/rules
 
+chmod +x ${BUILDDIR}/debian/rules
 
-rm -f debian/changelog debian/changelog.dch
+rm -f ${BUILDDIR}/debian/changelog ${BUILDDIR}/debian/changelog.dch
+cd ${BUILDDIR}
 dch --create -v ${VERSION} --package ${PKGNAME} "${DEBSDIR} packed "
-
 debuild --noconf --no-lintian -i -us -uc -b
-rm -rf debian
+
+cd -
+mv /var/tmp/debs2deb/${DEBNAME}_all.deb ${INITIAL_DIR}
+rm -rf ${BUILDDIR}
+ls -lah ${INITIAL_DIR}/${DEBNAME}_all.deb
+
