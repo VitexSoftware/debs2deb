@@ -76,7 +76,7 @@ case "$1" in
 esac
 
 echo "Now you can install: ${ONLYNAMES}"
-
+echo "#l`s ${INDEB_PKGSDIR}/*.deb | wc -l` packages fund in  local repo ${PKGNAME}"
 #DEBHELPER#
 
 EOF
