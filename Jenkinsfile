@@ -161,7 +161,7 @@ def buildPackage() {
 
 
 def postinstallCommand(){
-    return 'debs2deb ; ls  -l /var/cache/apt/archives; '
+    return 'debs2deb ; debs2deb ~ selftest ;  '
 }
 
 def installPackages() {
