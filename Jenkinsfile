@@ -166,15 +166,15 @@ def postinstallCommand(){
         returnStdout: true
     ).trim()
 
-    return 'debs2deb ; 
-    debs2deb .. selftest ; 
-    sudo rm /etc/apt/sources.list.d/* ; sudo apt update; 
-    echo "${GREEN} Produced package testing  INSTALATION ${ENDCOLOR}";
-    sudo dpkg -i selftest_*_all.deb; 
-    echo "${GREEN} Repository test ${ENDCOLOR}";
-    apt-get source debs2deb;
-    rm -fv selftest_*_all.deb
-    '
+    return 'debs2deb ; ' + 
+    'debs2deb .. selftest ; ' + 
+    'sudo rm /etc/apt/sources.list.d/* ; sudo apt update; ' + 
+    'echo "${GREEN} Produced package testing  INSTALATION ${ENDCOLOR}";' + 
+    'sudo dpkg -i selftest_*_all.deb; ' + 
+    'echo "${GREEN} Repository test ${ENDCOLOR}";' + 
+    'apt-get source debs2deb;' + 
+    'rm -fv selftest_*_all.deb;'
+    
 }
 
 def installPackages() {

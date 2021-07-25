@@ -81,8 +81,8 @@ Then you can see the packages availble:
 
 ```shell
 vitex@exiv:~/tmp$ aptitude search cri-o
-p   cri-o                                            - OCI-based implementation of Kubernetes Container Runtime Interface.                                    
-p   cri-o-runc                                       - Open Container Project - runtime                                                                       
+p   cri-o          - OCI-based implementation of Kubernetes Container Runtime Interface.                                    
+p   cri-o-runc     - Open Container Project - runtime                                                                       
 ```
 
 And install what you need:
