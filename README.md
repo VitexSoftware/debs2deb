@@ -116,7 +116,7 @@ sudo apt update
 sudo apt install debs2deb
 ```
 
-This program would not have been possible without the contribution of Sizek s.r.o.
+This program would not have been possible without the contribution of [Sizek s.r.o.](https://www.sizek.cz/)
 ![Sizek](sizek-logo.svg?raw=true)
 
 
