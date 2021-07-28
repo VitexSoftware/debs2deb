@@ -35,6 +35,7 @@ mkdir -p ${BUILDDIR}/debian
 
 ALLPACKAGES=`find ${DEBSDIR}  -type f  -name '*.deb' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'  | xargs -n1 | sort -u | xargs`
 
+
 PACKAGESDESC=""
 ONLYNAMES=""
 for PKG in ${ALLPACKAGES}; do
@@ -46,6 +47,11 @@ done
 if [ $VERBOSE = 1 ]; 
 then 
 	echo generating ${PKGNAME}.deb from ${DEBSDIR}
+fi
+
+if [ $VERBOSE = 1 ]; 
+then 
+	echo generating control
 fi
 
 cat > ${BUILDDIR}/debian/control << EOF
@@ -67,6 +73,11 @@ Description: Offline Custom deb repository
 ${PACKAGESDESC}
 EOF
 
+if [ $VERBOSE = 1 ]; 
+then 
+	echo generating postinst
+fi
+
 cat > ${BUILDDIR}/debian/postinst << EOF
 #! /bin/sh -e
 
@@ -76,10 +87,15 @@ case "$1" in
 esac
 
 echo "Now you can install: ${ONLYNAMES}"
-echo "#l`s ${INDEB_PKGSDIR}/*.deb | wc -l` packages fund in  local repo ${PKGNAME}"
+echo "#`ls ${INDEB_PKGSDIR}/*.deb | wc -l` packages fund in  local repo ${PKGNAME}"
 #DEBHELPER#
 
 EOF
+
+if [ $VERBOSE = 1 ]; 
+then 
+	echo generating postrm
+fi
 
 cat > ${BUILDDIR}/debian/postrm << EOF
 #! /bin/sh -e
@@ -89,6 +105,11 @@ cat > ${BUILDDIR}/debian/postrm << EOF
 #DEBHELPER#
 
 EOF
+
+if [ $VERBOSE = 1 ]; 
+then 
+	echo generating rules
+fi
 
 cat > ${BUILDDIR}/debian/rules << EOF
 #!/usr/bin/make -f
@@ -116,6 +137,8 @@ echo "	echo \"deb [trusted=yes] file://${STOREDIR} ${PKGNAME}/\" > ${BUILDDIR}/d
 echo "	dpkg-scanpackages --multiversion ${INDEB_PKGSDIR} /dev/null | sed  's#${INDEB_PKGSDIR}#${PKGNAME}#g' > ${INDEB_PKGSDIR}/Packages" >> ${BUILDDIR}/debian/rules
 
 chmod +x ${BUILDDIR}/debian/rules
+
+
 
 rm -f ${BUILDDIR}/debian/changelog ${BUILDDIR}/debian/changelog.dch
 cd ${BUILDDIR}
