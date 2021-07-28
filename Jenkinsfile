@@ -172,7 +172,7 @@ def postinstallCommand(){
     'echo "${GREEN} Produced package testing  INSTALATION ${ENDCOLOR}";' + 
     'sudo dpkg -i selftest_*_all.deb; ' + 
     'echo "${GREEN} Repository test ${ENDCOLOR}";' + 
-    'apt-get download debs2deb;' + 
+    'aptitude show debs2deb;' + 
     'rm -fv selftest_*_all.deb;'
     
 }
