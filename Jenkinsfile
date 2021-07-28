@@ -166,8 +166,9 @@ def postinstallCommand(){
         returnStdout: true
     ).trim()
 
-    return 'debs2deb ; ' + 
-    'debs2deb ~ selftest ; ' + 
+    return 'debs2deb ; ' +
+    'apt-get download bash;' +
+    'debs2deb . selftest ; ' + 
     'sudo rm /etc/apt/sources.list.d/* ; sudo apt update; ' + 
     'echo "${GREEN} Produced package testing  INSTALATION ${ENDCOLOR}";' + 
     'sudo dpkg -i selftest_*_all.deb; ' + 

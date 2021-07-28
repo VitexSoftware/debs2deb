@@ -82,9 +82,10 @@ cat > ${BUILDDIR}/debian/postinst << EOF
 #! /bin/sh -e
 
 case "$1" in
-    configure)
-	apt-get update
+    configure) 	
 esac
+
+apt-get update
 
 echo "Now you can install: ${ONLYNAMES}"
 echo "#`ls ${INDEB_PKGSDIR}/*.deb | wc -l` packages fund in  local repo ${PKGNAME}"
