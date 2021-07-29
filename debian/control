@@ -5,7 +5,7 @@ Build-Depends: debhelper-compat (= 12), coreutils, dpkg-dev, gzip, findutils
 Standards-Version: 4.5.1
 Maintainer: Vítězslav Dvořák <info@vitexsoftware.cz>
 Uploaders: Vitex <info@vitexsoftware.cz>
-Homepage: https://github.com/Vitexus/debs2deb/
+Homepage: https://github.com/VitexSoftware/debs2deb/
 
 Package: debs2deb
 Architecture: all

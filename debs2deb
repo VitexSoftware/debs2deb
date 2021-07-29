@@ -13,6 +13,19 @@ then
     exit
 fi
 
+if ! type "dch" > /dev/null; then
+ echo the required command "dch" not found. Please install
+ echo apt install devscripts
+ exit 1
+fi
+
+if ! type "debuild" > /dev/null; then
+ echo the required command "debuild" not found. Please install
+ echo apt install pbuilder
+ exit 1
+fi
+
+
 DEBSDIR=$1
 PKGNAME=$2
 
