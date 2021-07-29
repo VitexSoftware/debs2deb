@@ -168,7 +168,7 @@ def postinstallCommand(){
 
     return 'debs2deb ; ' +
     'debs2deb ~/workspace/vitexsoftware/debs2deb/dist/debian/ selftest ; ' + 
-    'sudo rm /etc/apt/sources.list.d/* ; sudo apt update; ' + 
+    'sudo rm /etc/apt/sources.list.d/* || true ; sudo apt update; ' + 
     'echo "${GREEN} Produced package testing  INSTALATION ${ENDCOLOR}";' + 
     'sudo dpkg -i selftest_*_all.deb; ' + 
     'echo "${GREEN} Repository test ${ENDCOLOR}";' + 
