@@ -44,14 +44,21 @@ BUILDDIR=/var/tmp/debs2deb/${DEBNAME}
 INDEB_PKGSDIR=${BUILDDIR}/debian/${PKGNAME}${PKGSDIR}
 INITIAL_DIR=`pwd`
 
-mkdir -p ${BUILDDIR}/debian
+mkdir -p ${BUILDDIR}/debian/tmp ${INDEB_PKGSDIR}
 
 ALLPACKAGES=`find ${DEBSDIR}  -type f  -name '*.deb' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'  | xargs -n1 | sort -u | xargs`
+
+if [ $VERBOSE = 1 ]; 
+then 
+	echo ${ALLPACKAGES} found
+fi
 
 
 PACKAGESDESC=""
 ONLYNAMES=""
 for PKG in ${ALLPACKAGES}; do
+	cp ${PKG} ${INDEB_PKGSDIR}
+	cp ${PKG} ${BUILDDIR}
 	ONLYNAMES="${ONLYNAMES} `basename ${PKG}| cut -d_ -f1` "
 	PACKAGESDESC="${PACKAGESDESC} `basename ${PKG}`		`dpkg-deb -I ${PKG} | grep 'Description: ' | sed 's/Description://g'`
 "
@@ -59,7 +66,7 @@ done
 
 if [ $VERBOSE = 1 ]; 
 then 
-	echo generating ${PKGNAME}.deb from ${DEBSDIR}
+	echo generating ${PKGNAME}.deb from ${DEBSDIR} in ${BUILDDIR}
 fi
 
 if [ $VERBOSE = 1 ]; 
@@ -142,9 +149,11 @@ mkdir -p ${BUILDDIR}/debian/source
 echo "3.0 (native)" > ${BUILDDIR}/debian/source/format
 echo "11" > ${BUILDDIR}/debian/compat
 
-for DEB in ${ALLPACKAGES}; do
-    echo "	cp ${DEB}  ${INDEB_PKGSDIR}" >> ${BUILDDIR}/debian/rules
-done 
+echo "*.deb	${PKGSDIR}" > ${BUILDDIR}/debian/install
+
+#for DEB in ${ALLPACKAGES}; do
+#    echo "	cp ${DEB}  ${INDEB_PKGSDIR}" >> ${BUILDDIR}/debian/rules
+#done 
 
 echo "	echo \"Remove me using: apt-get remove ${PKGNAME}\" > ${BUILDDIR}/debian/${PKGNAME}/etc/apt/sources.list.d/${PKGNAME}.list" >> ${BUILDDIR}/debian/rules
 echo "	echo \"deb [trusted=yes] file://${STOREDIR} ${PKGNAME}/\" > ${BUILDDIR}/debian/${PKGNAME}/etc/apt/sources.list.d/${PKGNAME}.list" >> ${BUILDDIR}/debian/rules
