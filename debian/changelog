@@ -1,3 +1,10 @@
+debs2deb (1.2) UNRELEASED; urgency=low
+
+  * functional now
+
+ -- Vitex <info@vitexsoftware.cz>  Mon, 15 Nov 2021 12:25:44 +0100
+
+
 debs2deb (1.1) UNRELEASED; urgency=low
 
   * Initial release. Closes: #nnnn
