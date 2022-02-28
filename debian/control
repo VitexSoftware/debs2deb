@@ -10,7 +10,7 @@ Homepage: https://github.com/VitexSoftware/debs2deb/
 Package: debs2deb
 Architecture: all
 Multi-Arch: foreign
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}, wget, devscripts, pbuilder
 Description: offline debian repository in debian package maker
  Search for all debian packages in given path and prepare 
  offline debian source from it
