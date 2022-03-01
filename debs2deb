@@ -29,6 +29,17 @@ fi
 DEBSDIR=$1
 PKGNAME=$2
 
+
+if echo "$DEBSDIR"| grep -Eq "^http"
+  then
+    URL=${DEBSDIR}
+	DEBSDIR=`basename $DEBSDIR`
+	mkdir -p ${DEBSDIR}
+	cd ${DEBSDIR}
+	wget -l 0 --no-directories --no-parent -c --content-disposition -e robots=off -A.deb -r ${URL}
+	cd ..
+fi
+
 if [ -z $2 ]; 
 then
 	PKGNAME=$(basename $DEBSDIR | tr '[:upper:]' '[:lower:]' ) 
@@ -66,7 +77,7 @@ done
 
 if [ $VERBOSE = 1 ]; 
 then 
-	echo generating ${PKGNAME}.deb from ${DEBSDIR} in ${BUILDDIR}
+	echo generating ${PKGNAME}.deb from ${URL} ${DEBSDIR} in ${BUILDDIR}
 fi
 
 if [ $VERBOSE = 1 ]; 
