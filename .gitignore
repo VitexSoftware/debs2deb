@@ -1,0 +1,6 @@
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/debs2deb.substvars
+debian/debs2deb/
+debian/files
+
